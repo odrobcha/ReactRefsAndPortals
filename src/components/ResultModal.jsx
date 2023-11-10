@@ -1,9 +1,13 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';  //wrap the Component function with forwardRef to forwarded ref to component. And received ref, as the second parameter, after the props
-// useImperativeHandle - use to define prop and methods that should be acceable from ouside of component
+                // useImperativeHandle - use to define prop and methods that should be acceable from ouside of component
 
-//The click on the button on the <form method="dialog"> inside <dialog> will close he dialog - built-in function
-const ResultModal = forwardRef(({ result, targetTime }, ref) => {
+                //The click on the button on the <form method="dialog"> inside <dialog> will close he dialog - built-in function
+const ResultModal = forwardRef(({ result, targetTime, remainingTime, onReset }, ref) => {
     const dialog = useRef();
+
+    const userLost = remainingTime <= 0;
+    const formattedRemainingTime = (remainingTime / 1000).toFixed(2);
+    const score = Math.round((1 - remainingTime / (targetTime * 1000)) * 100);
 
     useImperativeHandle(ref, () => {    // firs prop - is the ref (works together with forwardRef) , second - is the function that returns the object which groups all the props and methods, that should be exposed by this component (which will be callable from outside)
         return {
@@ -14,11 +18,14 @@ const ResultModal = forwardRef(({ result, targetTime }, ref) => {
     });
 
     return (
-      <dialog className="result-modal" ref={dialog}>
-          <h2>You {result}</h2>
+      <dialog className="result-modal" ref={dialog} onClose={onReset}>
+          {userLost && <h2>You lost</h2>}
+
+          {!userLost && <h2>Your score: {score}</h2>}
+
           <p>The target time was <strong>{targetTime}</strong></p>
-          <p>You stopped the timer with <strong>X seconds left.</strong></p>
-          <form method="dialog">
+          <p>You stopped the timer with <strong>{formattedRemainingTime} seconds left.</strong></p>
+          <form method="dialog" onSubmit={onReset}>
               <button>
                   Close
               </button>
