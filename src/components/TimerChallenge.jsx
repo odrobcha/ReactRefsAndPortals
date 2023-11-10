@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useImperativeHandle } from 'react';
 import ResultModal from './ResultModal';
 
 const TimerChallenge = ({ title, targetTime }) => {
@@ -10,7 +10,7 @@ const TimerChallenge = ({ title, targetTime }) => {
     const handleStart = () => {
         timer.current = setTimeout(() => {
             setTimerExpired(true);
-            dialog.current.showModal();  //showModal() -standart built-in method to open dialog
+            dialog.current.open();  // open() - method is inside ResultModal and connected trought useImperativeHandle
         }, targetTime * 1000);
         setTimerStarted(true);
     };
