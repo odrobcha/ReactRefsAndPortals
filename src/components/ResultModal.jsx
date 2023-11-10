@@ -2,6 +2,9 @@ import { forwardRef, useImperativeHandle, useRef } from 'react';  //wrap the Com
                 // useImperativeHandle - use to define prop and methods that should be acceable from ouside of component
 
                 //The click on the button on the <form method="dialog"> inside <dialog> will close he dialog - built-in function
+
+import {createPortal} from 'react-dom'  //to use portal. To achive it wrapthe jsx code with createPortal, with the 1 -argument the jsxcode, , 2 the second - HTML element to wich this component should be teleported (in index.html document #modal)
+
 const ResultModal = forwardRef(({ result, targetTime, remainingTime, onReset }, ref) => {
     const dialog = useRef();
 
@@ -17,7 +20,7 @@ const ResultModal = forwardRef(({ result, targetTime, remainingTime, onReset }, 
         };
     });
 
-    return (
+    return (createPortal(
       <dialog className="result-modal" ref={dialog} onClose={onReset}>
           {userLost && <h2>You lost</h2>}
 
@@ -31,8 +34,9 @@ const ResultModal = forwardRef(({ result, targetTime, remainingTime, onReset }, 
               </button>
 
           </form>
-      </dialog>
-    );
+      </dialog>,
+      document.getElementById("modal")
+    ));
 });
 
 export default ResultModal;
